@@ -1,0 +1,176 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+}
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Montserrat", Arial, sans-serif;
+  font-size: 18px;
+}
+.hidden {
+  display: none;
+}
+.inquiry {
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 40px;
+}
+.inquiryForm {
+  display: block;
+  width: 100%;
+}
+.inquiryFormRow {
+  margin-bottom: 20px;
+}
+.inquiryFormRowTitle {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000000;
+}
+.inquiryFormRowValue input {
+  width: 100%;
+  padding: 8px 5px;
+  box-sizing: border-box;
+  font-size: inherit;
+  font-family: inherit;
+}
+.inquiryFormRowButton {
+  width: 100%;
+  padding: 10px 0;
+  text-align: center;
+  font-size: 16px;
+  border: 0;
+  color: #ffffff;
+  background: #7871fa;
+  cursor: pointer;
+  user-select: none;
+}
+.inquiryFormRowButton:hover {
+  background: #3e3e7e;
+}
+.inquiryFormRowButton.processing {
+  color: #282828;
+  background: linear-gradient(180deg, #9cbdff, #303060, #9cbdff);
+  background-size: 600% 600%;
+  -webkit-animation: gradientAnimation 5s ease infinite;
+  -moz-animation: gradientAnimation 5s ease infinite;
+  animation: gradientAnimation 5s ease infinite;
+  cursor: not-allowed;
+}
+@-webkit-keyframes gradientAnimation {
+  0% {
+    background-position: 50% 0%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 50% 0%;
+  }
+}
+@-moz-keyframes gradientAnimation {
+  0% {
+    background-position: 50% 0%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 50% 0%;
+  }
+}
+@keyframes gradientAnimation {
+  0% {
+    background-position: 50% 0%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 50% 0%;
+  }
+}
+.loginForm {
+  width: 300px;
+  display: block;
+  margin: 0 auto;
+}
+.loginFormErrors {
+  width: 100%;
+  font-size: 0.7rem;
+  color: #92250e;
+}
+.loginFormRow {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+.loginFormRow a {
+  margin: 0.4rem 0;
+  color: inherit;
+  text-decoration: underline;
+}
+.loginFormRow a:hover {
+  text-decoration: none;
+}
+.loginFormRow input[type=text],
+.loginFormRow input[type=password] {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #cecece;
+  font-size: 1.2rem;
+  font-family: inherit;
+  padding: 0.3rem;
+}
+.loginFormRow input[type=text]:focus,
+.loginFormRow input[type=password]:focus {
+  border-color: #face7b;
+}
+.loginFormRow select {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1.2rem;
+  padding: 0.3rem;
+}
+.loginFormRow textarea {
+  width: 100%;
+  height: 6.5rem;
+  padding: 0.3rem;
+  box-sizing: border-box;
+  border: 1px solid #cecece;
+  font-size: 1.2rem;
+  font-family: inherit;
+  resize: none;
+}
+.loginFormRow textarea:focus {
+  border-color: #face7b;
+}
+.loginFormRow input[type=file] {
+  padding: 0.3rem 0;
+}
+.loginFormRow button {
+  width: 100%;
+  padding: 0.4rem;
+  border: none;
+  font-size: 1rem;
+  font-family: inherit;
+  color: #dcdcdc;
+  background: #003060;
+  cursor: pointer;
+  transition: background-color 0.4s;
+}
+.loginFormRow button:hover {
+  background: #00152b;
+}
+.loginFormRow button:active {
+  background: #0079f1;
+}
+.loginFormRowRequired {
+  color: #b50002;
+}
+/*# sourceMappingURL=style.css.map */

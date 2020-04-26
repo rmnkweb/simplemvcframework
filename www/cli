@@ -1,0 +1,16 @@
+<?php
+
+if (PHP_SAPI === 'cli') {
+
+    ini_set('display_errors', 1);
+
+    define("ROOT", __DIR__);
+
+    require __DIR__ . '/core/Cli.php';
+
+    $cli = new Cli();
+    $cli->init($argv);
+
+    echo PHP_EOL;
+
+}
