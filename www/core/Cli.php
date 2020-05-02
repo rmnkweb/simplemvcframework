@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use App\Controllers\UserController;
 use Core\Config;
 
 class Cli {
@@ -27,7 +29,13 @@ class Cli {
             } elseif ($args[1] === "user:list") {
                 $this->command_user_list();
             } elseif ($args[1] === "user:register") {
-                $this->command_user_register();
+                if ((isset($args[2])) AND (!(empty($args[2]))) AND
+                    (isset($args[3])) AND (!(empty($args[3]))) AND
+                    (isset($args[4]))) {
+                    $this->command_user_register($args[2], $args[3], $args[4]);
+                } else {
+                    $this->command_user_register_empty();
+                }
             } elseif ($args[1] === "test") {
                 if ((isset($args[2])) AND (!(empty($args[2])))) {
                     $this->command_test($args[2]);
@@ -91,7 +99,7 @@ class Cli {
             . " commands - list of available commands" . PHP_EOL
             . " user" . PHP_EOL
             . " user:list - list of registred users" . PHP_EOL
-            . " user:register [username] [password]" . PHP_EOL
+            . " user:register [username] [password] [group]" . PHP_EOL
             . " test [TestName]" . PHP_EOL
         ;
     }
@@ -99,18 +107,33 @@ class Cli {
     private function command_user() {
         echo "Subcommands for user:" . PHP_EOL
             . " user:list - list of registred users" . PHP_EOL
-            . " user:register [username] [password]" . PHP_EOL
+            . " user:register [username] [password] [group]" . PHP_EOL
         ;
     }
     private function command_user_list() {
         $this->autoload();
 
-        $users = new App\Models\Users();
-        $userList = $users->getUser();
-        print_r($userList);
+        $user = new App\Models\User();
+        try {
+            $userList = $user->getUsers();
+            print_r($userList);
+        } catch (Exception $exception) {
+            echo $exception->getMessage();
+        }
     }
-    private function command_user_register() {
+    private function command_user_register($username, $password, $group) {
         $this->autoload();
+
+        $userController = new App\Controllers\UserController();
+        if ($userController->add($username, $password, $group)) {
+            echo "User successfully registered!" . PHP_EOL;
+        } else {
+            echo "User registration error." . PHP_EOL;
+        }
+    }
+
+    private function command_user_register_empty() {
+        echo " user:register [username] [password] [group]" . PHP_EOL;
     }
 
     private function command_test($classname) {

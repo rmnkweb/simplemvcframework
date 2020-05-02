@@ -2,45 +2,25 @@
 
 namespace App\Controllers;
 use Core\Controller as Controller;
+use App\Models\User;
 
 class AuthorizationController extends Controller {
-    private $users = [
-        [
-            "username" => "admin",
-            "password" => "admin123",
-            "group" => 1,
-        ],
-    ];
-
 
     public function defaultAction($request = null) {
         $errors = [];
-        $formSent = false;
-        $userID = 0;
         if ((isset($this->request["username"])) OR (isset($this->request["password"]))) {
-            $formSent = true;
             $username = htmlspecialchars($this->request["username"]);
             $password = htmlspecialchars($this->request["password"]);
-            if ((!empty($this->request["username"])) AND (!empty($this->request["password"]))) {
-                foreach ($this->users as $id => $user) {
-                    if (($username === $user["username"]) AND ($password === $user["password"])) {
-                        $userID = $id;
-                        $userType = $user["group"];
-                    }
+            if ((!empty($username)) AND (!empty($password))) {
+                if ($this->authorize($this->request["username"], $this->request["password"])) {
+                    header("Location: /");
+                    die();
+                } else {
+                    $errors[] = "Не правильное имя пользователя или пароль.";
                 }
             } else {
                 $errors[] = "Все поля обязательны для заполнения";
             }
-        }
-
-
-        if (($formSent) AND (empty($errors))) {
-            $_SESSION[$this->config['sessionName']] = array(
-                "userID" => $userID,
-                "userType" => $userType,
-            );
-            header("Location: /");
-            die();
         }
 
         $this->view->render('template/header');
@@ -52,5 +32,32 @@ class AuthorizationController extends Controller {
         $_SESSION = [];
         session_unset();
         header('Location: /');
+    }
+
+    public function authorize($username, $password) {
+        $user = new User();
+        try {
+            $users = $user->getUsers([
+                "name" => $username
+            ]);
+            if (($users !== false) AND (count($users) > 0)) {
+                if ((array_key_exists("password", $users[0])) AND (password_verify($password, $users[0]["password"]))) {
+                    $_SESSION[$this->config['sessionName']] = array(
+                        "userID" => $users[0]["id"],
+                        "userType" => $users[0]["group"],
+                    );
+                    return true;
+                } else {
+                    echo "Password incorrect." . PHP_EOL;
+                }
+            } else {
+                echo "User not found" . PHP_EOL;
+            }
+
+            return false;
+        } catch (\Exception $exception) {
+            echo $exception->getMessage();
+            return false;
+        }
     }
 }

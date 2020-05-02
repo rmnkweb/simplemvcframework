@@ -3,12 +3,12 @@
 namespace App\Tests;
 use Core\UnitTest as UnitTest;
 
-class UsersTest {
+class UserTest {
     /** @var string Full name of testing class. */
     private $className;
 
     public function __construct() {
-        $this->className = "App\\Models\\Users";
+        $this->className = "App\\Models\\User";
     }
 
     private function testUpdateUser() {

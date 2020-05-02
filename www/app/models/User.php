@@ -3,7 +3,7 @@
 namespace App\Models;
 use Core\Model as Model;
 
-class Users extends Model {
+class User extends Model {
 
     /**
      * @var array $fields Array of database fields.

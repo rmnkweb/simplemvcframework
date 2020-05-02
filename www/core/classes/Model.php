@@ -183,10 +183,28 @@ class Model {
                         if ($fields[$fieldTitle]["type"] === "int") {
                             if (is_numeric($values[$fieldTitle])) {
                                 $querySetStr .= $fieldTitle . " = " . ((int) $values[$fieldTitle]) . ", ";
+                            } else {
+                                throw new Exception("DB->update error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") is not numeric: int expected.", 1);
                             }
                         } elseif ($fields[$fieldTitle]["type"] === "float") {
                             if (is_numeric($values[$fieldTitle])) {
                                 $querySetStr .= $fieldTitle . " = " . ((float) $values[$fieldTitle]) . ", ";
+                            } else {
+                                throw new Exception("DB->update error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") is not numeric: float expected.", 1);
+                            }
+                        } elseif ($fields[$fieldTitle]["type"] === "date") {
+                            if ((preg_match("/^(\d{4})-(\d{2})-(\d{2})$/", $values[$fieldTitle], $matches)) AND
+                                (checkdate($matches[2],$matches[3],$matches[1]))) {
+                                $querySetStr .= $fieldTitle . " = " . "\"" . $values[$fieldTitle] . "\", ";
+                            } else {
+                                throw new Exception("DB->update error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") have wrong format: date expected.", 1);
+                            }
+                        } elseif ($fields[$fieldTitle]["type"] === "datetime") {
+                            if ((preg_match("/^(\d{4})-(\d{2})-(\d{2}) ([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/", $values[$fieldTitle], $matches)) AND
+                                (checkdate($matches[2],$matches[3],$matches[1]))) {
+                                $querySetStr .= $fieldTitle . " = " . "\"" . $values[$fieldTitle] . "\", ";
+                            } else {
+                                throw new Exception("DB->update error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") have wrong format: datetime expected.", 1);
                             }
                         } else {
                             $querySetStr .= $fieldTitle . " = " . "\"" . htmlspecialchars($values[$fieldTitle]) . "\", ";
