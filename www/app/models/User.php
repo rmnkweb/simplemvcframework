@@ -33,11 +33,25 @@ class User extends Model {
                 "type" => "string",
                 "nullable" => true,
                 "autoincrement" => false,
+                "constraints" => [
+                    "length" => [
+                        "from" => 4,
+                        "to" => 20
+                    ],
+                    "match" => "/^[a-zA-Z0-9]+$/",
+                ]
             ],
             "password" => [
                 "type" => "string",
                 "nullable" => true,
                 "autoincrement" => false,
+                "constraints" => [
+                    "length" => [
+                        "from" => 4,
+                        "to" => 20
+                    ],
+                    "match" => "/^[a-zA-Z0-9]+$/",
+                ]
             ],
             "fullname" => [
                 "type" => "string",
