@@ -29,7 +29,7 @@ class User extends Model {
                 "nullable" => false,
                 "autoincrement" => true,
             ],
-            "username" => [
+            "name" => [
                 "type" => "string",
                 "nullable" => true,
                 "autoincrement" => false,
