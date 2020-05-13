@@ -1,6 +1,7 @@
 <?php
 
 namespace Core;
+use PDO;
 use PDOException;
 use Exception;
 
@@ -168,6 +169,7 @@ class Model {
     /**
      * @param string $table_name Name of database table.
      * @param array $fields Array of database fields with types (field title as array keys).
+     * @param int $id of updating element
      * @param array $values Array of values to be inserted (field title as array keys).
      * @return bool Returns true on success OR false on error.
      * @throws Exception
