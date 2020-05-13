@@ -76,7 +76,7 @@ class User extends Model {
      * @param array $filters Array of filter values (field title as array keys).
      * @return array|bool
      */
-    public function getUser($filters = []) {
+    public function getUsers($filters = []) {
         return parent::select($this->table_name, $this->fields, $filters);
     }
 
