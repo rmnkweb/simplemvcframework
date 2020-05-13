@@ -45,6 +45,7 @@ class Model {
      * @param array $fields Array of database fields with types (field title as array keys).
      * @param array $filters Array of filter values (field title as array keys).
      * @return array|bool Returns fetched array of selected items on success OR returns false on error.
+     * @throws Exception
      */
     protected function select($table_name, $fields = [], $filters = []) {
         if ((is_array($filters)) && (!empty($filters))) {
