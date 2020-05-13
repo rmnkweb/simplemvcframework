@@ -1,7 +1,7 @@
 <?php
 
 $session = [
-    "session_name" => "podologyInquirySession"
+    "session_name" => "simplemvc"
 ];
 
 return $session;
