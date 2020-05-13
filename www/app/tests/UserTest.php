@@ -30,7 +30,7 @@ class UserTest {
             "normal_case" => [
                 "arguments" => [
                     "valuesArray" => [
-                        "username" => "Tester",
+                        "name" => "Tester",
                         "password" => "verytestfullpassword",
                         "fullname" => "Testerov Test Testerovich",
                         "dob" => "2010-12-02",
