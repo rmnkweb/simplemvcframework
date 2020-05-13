@@ -75,6 +75,7 @@ class User extends Model {
     /**
      * @param array $filters Array of filter values (field title as array keys).
      * @return array|bool
+     * @throws \Exception
      */
     public function getUsers($filters = []) {
         return parent::select($this->table_name, $this->fields, $filters);
@@ -83,8 +84,12 @@ class User extends Model {
     /**
      * @param array $valuesArray Array of values to be inserted (field title as array keys).
      * @return array|bool
+     * @throws \Exception
      */
     public function addUser($valuesArray = []) {
+        if (array_key_exists("password", $valuesArray)) {
+            $valuesArray["password"] = $this->encryptPassword($valuesArray["password"]);
+        }
         return parent::insert($this->table_name, $this->fields, $valuesArray);
     }
 
@@ -92,9 +97,21 @@ class User extends Model {
      * @param int $id Updating element id (comparing with table field id).
      * @param array $valuesArray Array of values to be inserted (field title as array keys).
      * @return array|bool
+     * @throws \Exception
      */
     public function updateUser($id, $valuesArray) {
+        if (array_key_exists("password", $valuesArray)) {
+            $valuesArray["password"] = $this->encryptPassword($valuesArray["password"]);
+        }
         return parent::update($this->table_name, $this->fields, $id, $valuesArray);
+    }
+
+    /**
+     * @param string $string password before encryption
+     * @return bool|string
+     */
+    public function encryptPassword($string) {
+        return password_hash($string, PASSWORD_BCRYPT, ["cost" => 12]);
     }
 
 
