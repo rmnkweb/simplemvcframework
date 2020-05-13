@@ -5,21 +5,6 @@ use Core\Model as Model;
 
 class User extends Model {
 
-    /**
-     * @var array $fields Array of database fields.
-     * Key is field title.
-     * Values: [
-     *   @string type – field type [int/float/string/date];
-     *   @boolean nullable – if field value can be null;
-     *   @boolean autoincrement – if field is auto incrementing;
-     * ]
-     */
-    protected $fields;
-    /**
-     * @var string $table_name Contains database table name.
-     */
-    protected $table_name;
-
     public function __construct() {
         parent::__construct();
 
@@ -78,7 +63,7 @@ class User extends Model {
      * @throws \Exception
      */
     public function getUsers($filters = []) {
-        return parent::select($this->table_name, $this->fields, $filters);
+        return parent::select($filters);
     }
 
     /**
@@ -90,7 +75,7 @@ class User extends Model {
         if (array_key_exists("password", $valuesArray)) {
             $valuesArray["password"] = $this->encryptPassword($valuesArray["password"]);
         }
-        return parent::insert($this->table_name, $this->fields, $valuesArray);
+        return parent::insert($valuesArray);
     }
 
     /**
@@ -103,7 +88,7 @@ class User extends Model {
         if (array_key_exists("password", $valuesArray)) {
             $valuesArray["password"] = $this->encryptPassword($valuesArray["password"]);
         }
-        return parent::update($this->table_name, $this->fields, $id, $valuesArray);
+        return parent::update($id, $valuesArray);
     }
 
     /**
