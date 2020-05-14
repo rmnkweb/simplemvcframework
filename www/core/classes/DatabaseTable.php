@@ -86,7 +86,7 @@ class DatabaseTable extends Database {
 
     /**
      * @param array $filters Array of filter values (field title as array keys).
-     * @return array|Response Returns fetched array of selected items on success OR returns false on error.
+     * @return Response Returns fetched array of inserted items on success inside Response->data
      */
     protected function select($filters = []) {
         if ((is_array($filters)) && (!empty($filters))) {
@@ -122,7 +122,7 @@ class DatabaseTable extends Database {
         try {
             $statement = $this->db->prepare($query);
             $statement->execute();
-            return $statement->fetchAll(PDO::FETCH_ASSOC);
+            return new Response(1, false, false, $statement->fetchAll(PDO::FETCH_ASSOC));
         } catch(PDOException $e) {
             return new Response(0, $e->getMessage(), $e->getCode());
         }
@@ -131,7 +131,7 @@ class DatabaseTable extends Database {
     /**
      * @param array $values Array of values to be inserted (field title as array keys).
      * @param bool $returnValues If true – inserted item array will be returned (with new ID). Default false.
-     * @return array|Response Returns fetched array of inserted items on success OR Response(1) (depends on $returnValues param). Returns Response on error.
+     * @return Response Returns fetched array of inserted items on success inside Response->data (depends on $returnValues param)
      */
     protected function insert($values, $returnValues = false) {
         $queryFieldTitlesStr = "";
@@ -192,7 +192,7 @@ class DatabaseTable extends Database {
                 if (((isset($this->fields["id"])) && ($this->fields["id"]["autoincrement"] !== false)) || (!isset($this->fields["id"]))) {
                     $values["id"] = $this->db->lastInsertId();
                 }
-                return $values;
+                return new Response(1, false, false, $values);
             } else {
                 return new Response(1);
             }
