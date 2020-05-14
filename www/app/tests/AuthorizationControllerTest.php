@@ -4,7 +4,11 @@
 namespace App\Tests;
 use Core\UnitTest as UnitTest;
 
-
+/**
+ * Class AuthorizationControllerTest
+ * @package App\Tests
+ * @deprecated 
+ */
 class AuthorizationControllerTest {
     /** @var string Full name of testing class. */
     private $className;
