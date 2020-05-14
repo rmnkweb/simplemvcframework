@@ -34,12 +34,12 @@ class Response {
      */
     public function __construct($status, $message = "", $code = 0, $data = false) {
         $this->status = $status;
-        if ($message !== "") {
+        if ($message != false) {
             $this->message = $message;
         } else {
             $this->message = false;
         }
-        if ($code !== 0) {
+        if ($code != false) {
             $this->code = $code;
         } else {
             $this->code = false;
