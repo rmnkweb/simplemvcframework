@@ -2,6 +2,7 @@
 
 namespace App\Models;
 use Core\Model as Model;
+use Core\Response as Response;
 
 class User extends Model {
 
@@ -59,8 +60,7 @@ class User extends Model {
 
     /**
      * @param array $filters Array of filter values (field title as array keys).
-     * @return array|bool
-     * @throws \Exception
+     * @return Response
      */
     public function getUsers($filters = []) {
         return parent::select($filters);
@@ -68,8 +68,7 @@ class User extends Model {
 
     /**
      * @param array $valuesArray Array of values to be inserted (field title as array keys).
-     * @return array|bool
-     * @throws \Exception
+     * @return Response
      */
     public function addUser($valuesArray = []) {
         if (array_key_exists("password", $valuesArray)) {
@@ -81,8 +80,7 @@ class User extends Model {
     /**
      * @param int $id Updating element id (comparing with table field id).
      * @param array $valuesArray Array of values to be inserted (field title as array keys).
-     * @return array|bool
-     * @throws \Exception
+     * @return Response
      */
     public function updateUser($id, $valuesArray) {
         if (array_key_exists("password", $valuesArray)) {
