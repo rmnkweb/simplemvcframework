@@ -3,6 +3,11 @@
 namespace App\Tests;
 use Core\UnitTest as UnitTest;
 
+/**
+ * Class UserTest
+ * @package App\Tests
+ * @deprecated
+ */
 class UserTest {
     /** @var string Full name of testing class. */
     private $className;

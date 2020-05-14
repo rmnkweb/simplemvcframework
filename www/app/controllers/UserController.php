@@ -1,10 +1,9 @@
 <?php
 
-
 namespace App\Controllers;
 use Core\Controller as Controller;
 use App\Models\User;
-
+use Core\Response as Response;
 
 class UserController extends Controller {
 
@@ -12,6 +11,12 @@ class UserController extends Controller {
         $users = new User();
     }
 
+    /**
+     * @param $username string
+     * @param $password string not encrypted password
+     * @param int $group id of group
+     * @return Response
+     */
     public function add($username, $password, $group = 0) {
         if ((!empty($username)) AND (!empty($password))) {
             $values = [
@@ -21,17 +26,12 @@ class UserController extends Controller {
             ];
             $users = new User();
             if ($users->checkConstraints($values)) {
-                try {
-                    $users->addUser($values);
-                    return true;
-                } catch (\Exception $exception) {
-                    echo $exception->getMessage();
-                    return false;
-                }
+                return $users->addUser($values);
             } else {
-                echo "Constraints failure." . PHP_EOL;
-                return false;
+                return new Response(0, "Constraints failure.");
             }
+        } else {
+            return new Response(0, ((empty($username)) ? "Username is empty. " : "") . ((empty($username)) ? "Password is empty." : ""));
         }
     }
 }
