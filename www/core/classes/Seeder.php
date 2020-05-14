@@ -17,12 +17,20 @@ class Seeder extends DatabaseTable {
         $this->dataset = [];
     }
 
+    /**
+     * @param $values
+     * @return bool
+     */
     protected function add($values) {
         $this->dataset[] = $values;
 
         return true;
     }
 
+    /**
+     * Selecting database table to work with
+     * @param $table_name
+     */
     public function table($table_name) {
         parent::set($table_name);
     }
