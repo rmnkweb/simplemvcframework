@@ -6,6 +6,7 @@ namespace Core;
 use Exception;
 use PDO;
 use PDOException;
+use Core\Response as Response;
 
 class DatabaseTable extends Database {
     /**
@@ -33,7 +34,7 @@ class DatabaseTable extends Database {
 
     /**
      * @param $table_name string name of table in database
-     * @return bool
+     * @return Response
      */
     public function set($table_name) {
         $this->table_name = htmlspecialchars($table_name);
@@ -42,7 +43,7 @@ class DatabaseTable extends Database {
 
     /**
      * Collecting all database field information of stored $table_name to $fields variable
-     * @return bool
+     * @return Response
      */
     protected function collectFields() {
         $query = "DESCRIBE " . $this->table_name;
@@ -77,17 +78,15 @@ class DatabaseTable extends Database {
                     }
                 }
             }
-            return true;
+            return new Response(1);
         } catch(PDOException $e) {
-            echo $e->getMessage();
-            return false;
+            return new Response(0, $e->getMessage(), $e->getCode());
         }
     }
 
     /**
      * @param array $filters Array of filter values (field title as array keys).
-     * @return array|bool Returns fetched array of selected items on success OR returns false on error.
-     * @throws Exception
+     * @return array|Response Returns fetched array of selected items on success OR returns false on error.
      */
     protected function select($filters = []) {
         if ((is_array($filters)) && (!empty($filters))) {
@@ -99,13 +98,13 @@ class DatabaseTable extends Database {
                         if (is_numeric($filterValue)) {
                             $whereStr .= $filterTitle . " = " . ((int) $filterValue) . " AND ";
                         } else {
-                            throw new Exception("DB->select error. Filter field " . $filterTitle . " value (" . $filterValue . ") is not numeric: int expected.", 1);
+                            return new Response(0, "DB->select error. Filter field " . $filterTitle . " value (" . $filterValue . ") is not numeric: int expected.", 1);
                         }
                     } elseif ($this->fields[$filterTitle]["type"] === "float") {
                         if (is_numeric($filterValue)) {
                             $whereStr .= $filterTitle . " = " . ((float) $filterValue) . " AND ";
                         } else {
-                            throw new Exception("DB->select error. Filter field " . $filterTitle . " value (" . $filterValue . ") is not numeric: float expected.", 1);
+                            return new Response(0, "DB->select error. Filter field " . $filterTitle . " value (" . $filterValue . ") is not numeric: float expected.", 1);
                         }
                     } else {
                         $whereStr .= $filterTitle . " = " .  "\"" . htmlspecialchars($filterValue) . "\" AND ";
@@ -125,16 +124,14 @@ class DatabaseTable extends Database {
             $statement->execute();
             return $statement->fetchAll(PDO::FETCH_ASSOC);
         } catch(PDOException $e) {
-            echo $e->getMessage();
-            return false;
+            return new Response(0, $e->getMessage(), $e->getCode());
         }
     }
 
     /**
      * @param array $values Array of values to be inserted (field title as array keys).
      * @param bool $returnValues If true – inserted item array will be returned (with new ID). Default false.
-     * @return array|bool Returns fetched array of inserted items on success OR (bool) true (depends on $returnValues param). Returns false on error.
-     * @throws Exception
+     * @return array|Response Returns fetched array of inserted items on success OR Response(1) (depends on $returnValues param). Returns Response on error.
      */
     protected function insert($values, $returnValues = false) {
         $queryFieldTitlesStr = "";
@@ -149,27 +146,27 @@ class DatabaseTable extends Database {
                         if (is_numeric($values[$fieldTitle])) {
                             $queryFieldValuesStr .= ((int) $values[$fieldTitle]) . ", ";
                         } else {
-                            throw new Exception("DB->insert error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") is not numeric: int expected.", 1);
+                            return new Response(0, "DB->insert error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") is not numeric: int expected.", 1);
                         }
                     } elseif ($field["type"] === "float") {
                         if (is_numeric($values[$fieldTitle])) {
                             $queryFieldValuesStr .= ((float) $values[$fieldTitle]) . ", ";
                         } else {
-                            throw new Exception("DB->insert error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") is not numeric: float expected.", 1);
+                            return new Response(0, "DB->insert error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") is not numeric: float expected.", 1);
                         }
                     } elseif ($field["type"] === "date") {
                         if ((preg_match("/^(\d{4})-(\d{2})-(\d{2})$/", $values[$fieldTitle], $matches)) AND
                             (checkdate($matches[2],$matches[3],$matches[1]))) {
                             $queryFieldValuesStr .= "\"" . $values[$fieldTitle] . "\", ";
                         } else {
-                            throw new Exception("DB->insert error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") have wrong format: date expected.", 1);
+                            return new Response(0, "DB->insert error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") have wrong format: date expected.", 1);
                         }
                     } elseif ($field["type"] === "datetime") {
                         if ((preg_match("/^(\d{4})-(\d{2})-(\d{2}) ([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/", $values[$fieldTitle], $matches)) AND
                             (checkdate($matches[2],$matches[3],$matches[1]))) {
                             $queryFieldValuesStr .= "\"" . $values[$fieldTitle] . "\", ";
                         } else {
-                            throw new Exception("DB->insert error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") have wrong format: datetime expected.", 1);
+                            return new Response(0, "DB->insert error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") have wrong format: datetime expected.", 1);
                         }
                     } else {
                         $queryFieldValuesStr .= "\"" . htmlspecialchars($values[$fieldTitle]) . "\", ";
@@ -178,7 +175,7 @@ class DatabaseTable extends Database {
                     if ($field["nullable"]) {
                         $queryFieldValuesStr .= "NULL, ";
                     } else {
-                        throw new Exception("DB->insert error. Field " . $fieldTitle . " value not found. Can't be null.");
+                        return new Response(0, "DB->insert error. Field " . $fieldTitle . " value not found. Can't be null.");
                     }
                 }
             }
@@ -197,19 +194,17 @@ class DatabaseTable extends Database {
                 }
                 return $values;
             } else {
-                return true;
+                return new Response(1);
             }
         } catch(PDOException $e) {
-            echo $e->getMessage();
-            return false;
+            return new Response(0, $e->getMessage(), $e->getCode());
         }
     }
 
     /**
      * @param int $id of updating element
      * @param array $values Array of values to be inserted (field title as array keys).
-     * @return bool Returns true on success OR false on error.
-     * @throws Exception
+     * @return Response Returns true on success OR false on error.
      */
     protected function update($id, $values) {
 
@@ -224,34 +219,34 @@ class DatabaseTable extends Database {
                             if (is_numeric($values[$fieldTitle])) {
                                 $querySetStr .= $fieldTitle . " = " . ((int) $values[$fieldTitle]) . ", ";
                             } else {
-                                throw new Exception("DB->update error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") is not numeric: int expected.", 1);
+                                return new Response(0, "DB->update error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") is not numeric: int expected.", 1);
                             }
                         } elseif ($this->fields[$fieldTitle]["type"] === "float") {
                             if (is_numeric($values[$fieldTitle])) {
                                 $querySetStr .= $fieldTitle . " = " . ((float) $values[$fieldTitle]) . ", ";
                             } else {
-                                throw new Exception("DB->update error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") is not numeric: float expected.", 1);
+                                return new Response(0, "DB->update error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") is not numeric: float expected.", 1);
                             }
                         } elseif ($this->fields[$fieldTitle]["type"] === "date") {
                             if ((preg_match("/^(\d{4})-(\d{2})-(\d{2})$/", $values[$fieldTitle], $matches)) AND
                                 (checkdate($matches[2],$matches[3],$matches[1]))) {
                                 $querySetStr .= $fieldTitle . " = " . "\"" . $values[$fieldTitle] . "\", ";
                             } else {
-                                throw new Exception("DB->update error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") have wrong format: date expected.", 1);
+                                return new Response(0, "DB->update error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") have wrong format: date expected.", 1);
                             }
                         } elseif ($this->fields[$fieldTitle]["type"] === "datetime") {
                             if ((preg_match("/^(\d{4})-(\d{2})-(\d{2}) ([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/", $values[$fieldTitle], $matches)) AND
                                 (checkdate($matches[2],$matches[3],$matches[1]))) {
                                 $querySetStr .= $fieldTitle . " = " . "\"" . $values[$fieldTitle] . "\", ";
                             } else {
-                                throw new Exception("DB->update error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") have wrong format: datetime expected.", 1);
+                                return new Response(0, "DB->update error. Field " . $fieldTitle . " value (" . $values[$fieldTitle] . ") have wrong format: datetime expected.", 1);
                             }
                         } else {
                             $querySetStr .= $fieldTitle . " = " . "\"" . htmlspecialchars($values[$fieldTitle]) . "\", ";
                         }
                     }
                 } else {
-                    throw new Exception("DB->update error. Field with name " . $fieldTitle . " not found.");
+                    return new Response(0, "DB->update error. Field with name " . $fieldTitle . " not found.");
                 }
             }
             $querySetStr = substr($querySetStr, 0, -2);
@@ -261,14 +256,13 @@ class DatabaseTable extends Database {
             try {
                 $statement = $this->db->prepare($query);
                 $statement->execute();
-                return true;
+                return new Response(1);
             } catch(PDOException $e) {
-                echo $e->getMessage();
-                return false;
+                return new Response(0, $e->getMessage(), $e->getCode());
             }
 
         } else {
-            return false;
+            return new Response(2, "Empty values array given.");
         }
     }
 }
