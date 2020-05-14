@@ -2,6 +2,7 @@
 
 namespace Core;
 
+use Core\Response as Response;
 use Exception;
 
 class Seeder extends DatabaseTable {
@@ -27,15 +28,14 @@ class Seeder extends DatabaseTable {
     }
 
     protected function seed() {
-        $statuses = [];
+        $results = [];
         foreach ($this->dataset as $i => $data) {
             try {
                 if (parent::insert($data)) {
-                    $statuses[$i] = 1;
+                    $results[$i] = new Response(1);
                 }
             } catch (Exception $e) {
-                $statuses[$i] = 0;
-                echo $e->getMessage();
+                $results[$i] = new Response(0, $e->getMessage(), $e->getCode());
             }
         }
     }
