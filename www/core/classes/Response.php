@@ -20,14 +20,19 @@ class Response {
      * @var int detailed code of warning or error; must be not equal 0
      */
     private $code;
+    /**
+     * @var mixed data to be returned from object/method
+     */
+    private $data;
 
     /**
      * Response constructor.
      * @param int 0 - error occurred; 1 - everything is fine; 2 - warning.
      * @param string $message description of response
      * @param int $code detailed code of warning or error; must be not equal 0
+     * @param mixed $data to be returned from object/method
      */
-    public function __construct($status, $message = "", $code = 0) {
+    public function __construct($status, $message = "", $code = 0, $data = false) {
         $this->status = $status;
         if ($message !== "") {
             $this->message = $message;
@@ -38,6 +43,11 @@ class Response {
             $this->code = $code;
         } else {
             $this->code = false;
+        }
+        if ($data !== false) {
+            $this->data = $data;
+        } else {
+            $this->data = false;
         }
     }
 
@@ -61,6 +71,12 @@ class Response {
     public function getCode() {
         return $this->code;
     }
+    /**
+     * @return mixed
+     */
+    public function getData() {
+        return $this->data;
+    }
 
     /**
      * @return array
@@ -70,6 +86,7 @@ class Response {
             "status" => $this->status,
             "message" => $this->message,
             "code" => $this->code,
+            "data" => $this->data,
         ];
 
         return $array;
