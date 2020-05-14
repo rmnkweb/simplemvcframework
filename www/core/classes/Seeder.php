@@ -2,7 +2,7 @@
 
 namespace Core;
 
-use mysql_xdevapi\Exception;
+use Exception;
 
 class Seeder extends DatabaseTable {
     /**
