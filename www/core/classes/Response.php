@@ -57,14 +57,12 @@ class Response {
     public function getStatus() {
         return $this->status;
     }
-
     /**
      * @return string
      */
     public function getMessage() {
         return $this->message;
     }
-
     /**
      * @return int
      */
@@ -91,11 +89,41 @@ class Response {
 
         return $array;
     }
-
     /**
      * @return false|string
      */
     public function getJSON() {
         return json_encode($this->getArray());
+    }
+
+    /**
+     * @return bool
+     */
+    public function isError() {
+        if ($this->status === 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /**
+     * @return bool
+     */
+    public function isSuccess() {
+        if ($this->status === 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /**
+     * @return bool
+     */
+    public function isWarning() {
+        if ($this->status === 2) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
