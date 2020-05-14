@@ -2,6 +2,10 @@
 
 namespace Core;
 
+/**
+ * Class Response using to connect objects/methods between each others. Attributes can only be set during initialization.
+ * @package Core
+ */
 class Response {
 
     /**
